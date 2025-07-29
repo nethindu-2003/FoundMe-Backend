@@ -16,7 +16,9 @@
     "express": "^5.1.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.3",
-    "nodemon": "^3.1.10"
+    "natural": "^8.1.0",
+    "nodemon": "^3.1.10",
+    "string-similarity": "^4.0.4"
   },
   "keywords": []
 }

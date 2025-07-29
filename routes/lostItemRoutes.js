@@ -3,21 +3,36 @@ const router = express.Router();
 const LostItem = require('../models/LostItem');
 
 router.post('/lost', async (req, res) => {
+  const {
+    lostitem, lostdatetime, lostlocation,
+    ownername, ownerphonenumber, lostdescription, username
+  } = req.body;
+
+  if (!username) return res.status(400).json({ message: "Username required" });
+
   try {
-    const item = new LostItem(req.body);
-    await item.save();
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const newLost = new LostItem({
+      lostitem, lostdatetime, lostlocation,
+      ownername, ownerphonenumber, lostdescription,
+      username // 🔑 Save it
+    });
+
+    await newLost.save();
+    res.status(201).json(newLost);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to save lost item" });
   }
 });
 
+
 router.get('/', async (req, res) => {
   try {
-    const items = await LostItem.find();
+    const { username } = req.query;
+    const query = username ? { username } : {};
+    const items = await LostItem.find(query);
     res.json(items);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

@@ -3,23 +3,39 @@ const router = express.Router();
 const FoundItem = require('../models/FoundItem');
 
 router.post('/found', async (req, res) => {
+  const {
+    founditem, founddatetime, foundlocation,
+    findercontact, founddescription,username
+  } = req.body;
+
+  if (!username) return res.status(400).json({ message: "Username required" });
+
   try {
-    const item = new FoundItem(req.body);
-    await item.save();
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const newFound = new FoundItem({
+      founditem, founddatetime, foundlocation,
+      findercontact, founddescription,
+      username
+    });
+
+    await newFound.save();
+    res.status(201).json(newFound);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to save found item" });
   }
 });
 
+
 router.get('/', async (req, res) => {
   try {
-    const items = await FoundItem.find();
+    const { username } = req.query;
+    const query = username ? { username } : {};
+    const items = await FoundItem.find(query);
     res.json(items);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 router.put('/:id', async (req, res) => {
   try {
