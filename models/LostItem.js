@@ -7,7 +7,7 @@ const lostItemSchema = new mongoose.Schema({
   ownername: String,
   ownerphonenumber: String,
   lostdescription: String,
-  username: { type: String, required: true },
+  email: { type: String, required: true },
 });
 
 module.exports = mongoose.model('LostItem', lostItemSchema);

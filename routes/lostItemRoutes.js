@@ -5,16 +5,16 @@ const LostItem = require('../models/LostItem');
 router.post('/lost', async (req, res) => {
   const {
     lostitem, lostdatetime, lostlocation,
-    ownername, ownerphonenumber, lostdescription, username
+    ownername, ownerphonenumber, lostdescription, email
   } = req.body;
 
-  if (!username) return res.status(400).json({ message: "Username required" });
+  if (!email) return res.status(400).json({ message: "Username required" });
 
   try {
     const newLost = new LostItem({
       lostitem, lostdatetime, lostlocation,
       ownername, ownerphonenumber, lostdescription,
-      username // 🔑 Save it
+      email // 🔑 Save it
     });
 
     await newLost.save();
@@ -27,8 +27,8 @@ router.post('/lost', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { username } = req.query;
-    const query = username ? { username } : {};
+    const { email } = req.query;
+    const query = email ? { email } : {};
     const items = await LostItem.find(query);
     res.json(items);
   } catch (err) {

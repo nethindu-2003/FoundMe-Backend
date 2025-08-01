@@ -1,78 +1,15 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const router = express.Router();
 const User = require('../models/User');
 const LostItem = require('../models/LostItem');
 const FoundItem = require('../models/FoundItem');
+const authController = require('../controllers/authController');
 
-router.post('/signup', async (req, res) => {
-  try {
-    const { name, gender, birthday, phonenumber, username, password } = req.body;
-
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Username already exists' });
-    }
-
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    const user = new User({
-      name,
-      gender,
-      birthday,
-      phonenumber,
-      username,
-      password: hashedPassword, 
-    });
-
-    await user.save();
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Signup error:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    // 1. Find the user
-    const user = await User.findOne({ username });
-
-    // 2. If user not found
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid username or password' });
-    }
-
-    // 3. Check if user is banned BEFORE checking password
-    if (user.isBanned) {
-      return res.status(403).json({ error: 'Access denied. Your account has been banned by admin.' });
-    }
-
-    // 4. Check password match
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      return res.status(400).json({ error: 'Invalid username or password' });
-    }
-
-    // 5. Login success
-    res.json({
-      success: true,
-      message: 'Login successful',
-      user: {
-        username: user.username,
-        role: user.role || 'user',
-      },
-    });
-
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ error: 'Server error during login' });
-  }
-});
+router.post('/signup', authController.signup);
+router.get('/verify-email/:token', authController.verifyEmail);
+router.post('/login', authController.login);
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password/:token', authController.resetPassword);
 
 // Get all users
 router.get('/', async (req, res) => {

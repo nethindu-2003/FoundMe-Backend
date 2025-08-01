@@ -5,16 +5,16 @@ const FoundItem = require('../models/FoundItem');
 router.post('/found', async (req, res) => {
   const {
     founditem, founddatetime, foundlocation,
-    findercontact, founddescription,username
+    findercontact, founddescription,email
   } = req.body;
 
-  if (!username) return res.status(400).json({ message: "Username required" });
+  if (!email) return res.status(400).json({ message: "Email required" });
 
   try {
     const newFound = new FoundItem({
       founditem, founddatetime, foundlocation,
       findercontact, founddescription,
-      username
+      email
     });
 
     await newFound.save();
@@ -27,8 +27,8 @@ router.post('/found', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { username } = req.query;
-    const query = username ? { username } : {};
+    const { email } = req.query;
+    const query = email ? { email } : {};
     const items = await FoundItem.find(query);
     res.json(items);
   } catch (err) {
