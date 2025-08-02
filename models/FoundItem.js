@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const foundItemSchema = new mongoose.Schema({
   founditem: String,
-  founddatetime: String,
+  founddatetime: Date,
   foundlocation: String,
   findercontact: String,
   founddescription: String,

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const lostItemSchema = new mongoose.Schema({
   lostitem: String,
-  lostdatetime: String,
+  lostdatetime: Date,
   lostlocation: String,
   ownername: String,
   ownerphonenumber: String,

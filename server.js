@@ -24,6 +24,7 @@ mongoose.connect(uri, {
 
 
 app.use('/api/auth', require('./routes/userRoutes'));
+app.use('/api/matches', require('./routes/matchRoutes'));
 app.use('/api/users', userRoutes);
 app.use('/api/lost', lostItemRoutes);
 app.use('/api/found', foundItemRoutes);
